@@ -1,0 +1,21 @@
+localhost	Initreq	0	Success\n	
+localhost	Config	0	Success\n
+
+localhost;Login;0;Success
+localhost;Logout;0;Success
+localhost;Initreq;2;This service has Failed
+localhost;Initreq;2;This service has Failed
+localhost;Config;2;This service has Failed
+localhost;Login;2;This service has Failed
+localhost;Logout;2;This service has Failed
+
+localhost;postmanBDD;0;Success
+localhost;CRN status;0;Success
+localhost;VerifyMPIN;0;Success
+localhost;CCList;0;Success
+localhost;AccList;0;Success
+localhost;postmanBDD;2;This service has Failed
+localhost;CRN status;2;This service has Failed
+localhost;VerifyMPIN;2;This service has Failed
+localhost;CCList;2;This service has Failed
+localhost;AccList;2;This service has Failed
