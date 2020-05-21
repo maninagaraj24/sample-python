@@ -1,0 +1,128 @@
+#!/usr/bin/python
+from selenium import webdriver
+from datetime import date
+import os
+from docx2pdf import convert
+from docx import Document
+from docx.shared import Inches
+import owncloud
+import pytesseract #https://github.com/tesseract-ocr/tesseract/wiki
+from PIL import Image
+import csv
+#from io import StringIO
+today = date.today()
+D = today.strftime("%d")
+print("D =", D)
+M = today.strftime("%m")
+print("M =", M)
+Y = today.strftime("%Y")
+print("Y =", Y)
+if not os.path.exists(f'/Users/mani/Documents/Angel-Monring/Screenshot-{D}-{M}-{Y}'):
+    os.makedirs(f'/Users/mani/Documents/Angel-Morning/Screenshot-{D}-{M}-{Y}')
+driver=webdriver.Chrome(executable_path="/Users/mani/bin/chromedriver")
+SP=f"/Users/mani/Documents/Angel-Morning/Screenshot-{D}-{M}-{Y}"
+driver.set_window_size(620, 510) # set the window size that you need 
+url=[]
+#WEB1
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-1&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-1&srv=SYS-Memory-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-1&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-1&srv=MSF-Conn-WS-443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+#WEB2
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-2&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-2&srv=SYS-Memory-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-2&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-web-2&srv=MSF-Conn-WS-443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+#STREAMER1
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-1&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-1&srv=SYS-Memory-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-1&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-1&srv=MSF-Conn-WS-Pushserver-8443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+#STREAMER-2
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-2&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-2&srv=SYS-Memory-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-2&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-2&srv=MSF-Conn-WS-Pushserver-8443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+#STREAMER-3
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-3&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-3&srv=SYS-Memory-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-3&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-3&srv=MSF-Conn-WS-Pushserver-8443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+#STREAMER-4
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-4&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-4&srv=SYS-MEMORY-Usage&start=05%2F07%2F2020+09%3A00+&end=05%2F07%2F2020+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-4&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-4&srv=MSF-Conn-WS-Pushserver-8443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+#STREAMER-5
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-5&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-5&srv=SYS-MEMORY-Usage&start=05%2F07%2F2020+09%3A00+&end=05%2F07%2F2020+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-5&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-5&srv=MSF-Conn-WS-Pushserver-8443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+#STREAMER-6
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-6&srv=SYS-CPU-Usage&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-6&srv=SYS-MEMORY-Usage&start=05%2F07%2F2020+09%3A00+&end=05%2F07%2F2020+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-6&srv=SYS-Current-Load&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+url.append(f'https://Abmaproductteam:noc@123@mprod-ws.angelbroking.com/pnp4nagios/graph?host=angel-tr-prod-binary-streamer-6&srv=MSF-Conn-WS-Pushserver-8443&start={M}%2F{D}%2F{Y}+09%3A00+&end={M}%2F{D}%2F{Y}+10%3A00+')
+i=1
+for x in url:
+    driver.get(x)
+    driver.set_page_load_timeout(20)
+    filename = 'morning'+str(i)+'.png'
+    i+=1
+    print ({filename})
+    driver.save_screenshot(f'{SP}/{filename}')
+driver.close()
+document = Document()
+p = document.add_paragraph()
+r = p.add_run()
+for i in range(1,33):
+ filename = 'morning'+str(i)+'.png'
+ r.add_picture(f'{SP}/{filename}', width=Inches(6.7))
+document.save(f'{SP}/Angel-TR-Utilization-Report-{D}{M}{Y}9to10AM.docx')
+convert(f'{SP}/Angel-TR-Utilization-Report-{D}{M}{Y}9to10AM.docx', f'{SP}/Angel-TR-Utilization-Report-{D}{M}{Y}9to10AM.pdf')
+oc = owncloud.Client('https://files.marketsimplified.com/owncloud/')
+oc.login('infraadmin', 'File$Upl0ad')
+oc.mkdir(f'INFRA/Utilisation-Reports/ANGEL/OMNESYS/{D}-{M}-{Y}/')
+oc.mkdir(f'INFRA/Utilisation-Reports/ANGEL/OMNESYS/{D}-{M}-{Y}/Morning/')
+oc.put_file(f'INFRA/Utilisation-Reports/ANGEL/OMNESYS/{D}-{M}-{Y}/Morning/', f'{SP}/Angel-TR-Utilization-Report-{D}{M}{Y}9to10AM.pdf')
+def result_loop():
+   save_items_data = []
+   for i in range(1,33):
+      filename = 'morning'+str(i)+'.png'
+      img = Image.open(f'{SP}/{filename}')
+      a=(pytesseract.image_to_string(img)) 
+      b = (a.splitlines()) 
+      category=['Max'] 
+      for s in category: 
+         matches = [x for x in b if s in x]
+         listToStr = ' '.join(map(str, matches)) 
+         result = (listToStr.split('Last', maxsplit=1)[-1])
+         res = (result.split('Max', maxsplit=1)[0])
+         save_items_data.append(res)         
+   return save_items_data 
+save_items_data = result_loop() 
+print (save_items_data)
+fo=open(f'{SP}/input_angel-{D}{M}{Y}.csv','w', newline='')
+csv_write = csv.writer(fo, delimiter=',')
+csv_write.writerow(['CPU','Memory','Current_Load','443_connection'])
+csv_write.writerows([save_items_data[0:4]])
+csv_write.writerows([save_items_data[4:8]])
+csv_write.writerows([save_items_data[8:12]])
+csv_write.writerows([save_items_data[12:16]])
+csv_write.writerows([save_items_data[16:20]])
+csv_write.writerows([save_items_data[20:24]])
+csv_write.writerows([save_items_data[24:28]])
+csv_write.writerows([save_items_data[28:32]])
+fo.close()
+list_of_str = ['angel-tr-prod-web-1','angel-tr-prod-web-2', 'angel-tr-prod-binary-streamer-1','angel-tr-prod-binary-streamer-2', 'angel-tr-prod-binary-streamer-3', 'angel-tr-prod-binary-streamer-4', 'angel-tr-prod-binary-streamer-5', 'angel-tr-prod-binary-streamer-6']
+header_of_new_col = 'Address'
+def add_column_in_csv(input_file, output_file, transform_row):
+    with open(input_file, 'r') as read_obj, \
+            open(output_file, 'w', newline='') as write_obj:
+        csv_reader = csv.reader(read_obj)
+        csv_writer = csv.writer(write_obj)
+        for row in csv_reader:
+            transform_row(row, csv_reader.line_num)
+            csv_writer.writerow(row)
+add_column_in_csv(f'{SP}/input_angel-{D}{M}{Y}.csv', f'{SP}/angel_morning-{D}{M}{Y}.csv',lambda row, line_num: row.insert(0, header_of_new_col) if line_num == 1 else row.insert(0, list_of_str[line_num - 2]))
+os.remove(f'{SP}/input_angel-{D}{M}{Y}.csv')
