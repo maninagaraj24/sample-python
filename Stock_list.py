@@ -62,20 +62,20 @@ memory = get_size(svmem.total)
 result_list += [memory]
 print (result_list)
 #print(f"Available: {get_size(svmem.total)}")
-#partitions = psutil.disk_partitions()
-#for partition in partitions:
-#    print(f"=== Device: {partition.device} ===")
-#    print(f"  Mountpoint: {partition.mountpoint}")
-#    print(f"  File system type: {partition.fstype}")
-#    try:
-#        partition_usage = psutil.disk_usage(partition.mountpoint)
-#    except PermissionError:
-#        # this can be catched due to the disk that
-#        # isn't ready
-#        continue
-#    print(f"  Total Size: {get_size(partition_usage.total)}")
-#    if "/" == partition.mountpoint:
-#        continue
+partitions = psutil.disk_partitions()
+for partition in partitions:
+    print(f"=== Device: {partition.device} ===")
+    print(f"  Mountpoint: {partition.mountpoint}")
+    print(f"  File system type: {partition.fstype}")
+    try:
+        partition_usage = psutil.disk_usage(partition.mountpoint)
+    except PermissionError:
+        # this can be catched due to the disk that
+        # isn't ready
+        continue
+    print(f"  Total Size: {get_size(partition_usage.total)}")
+    if "/" in partition.mountpoint:
+        break
 swap = psutil.swap_memory()
 swap_memory = get_size(swap.total)
 result_list += [swap_memory]
